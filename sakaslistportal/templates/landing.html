@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SakasTrack - Welcome</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-dark: #00368e8e;
+            --bg-dark: #0f172a;
+            --bg-darker: #0a0f1c;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, var(--bg-darker), var(--bg-dark));
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 700px;
+        }
+
+        .logo {
+            margin-bottom: 2rem;
+        }
+        .logo img {
+            width: 80px; height: auto;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1.1rem;
+            background: var(--primary-color);
+            color: var(--bg-dark);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo">
+            <img src="{% static 'images/sakaslist_logo-removebg-preview.png' %}" alt="Logo">
+        </div>
+
+        <!-- Welcome Message -->
+        <h1>Welcome to SakasTrack</h1>
+        <p>
+            A simple and smart way to submit and track your queries.
+            Get your issues routed directly to the right department, fast and transparently.
+        </p>
+
+
+        <div style="margin: 15px">
+            <!-- Action Button -->
+            <a href="{% url 'submit_query' %}" class="btn">Submit a Query</a>
+        </div>
+        <div style="margin: 15px">
+            <!-- Action Button -->
+            <a href="{% url 'track_query' %}" class="btn">Track your Query</a>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,448 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Staff Profile - SakasTrack Admin</title>
+
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<style>
+/* box-sizing + reset */
+* { box-sizing: border-box; }
+html,body { height:100%; }
+body {
+  margin: 0;
+  font-family: "Spline Sans", "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: #0f172a;
+  color: #fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Sidebar (fixed) */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 250px;               /* <-- sidebar width */
+  background: #1e293b;
+  border-right: 1px solid #334155;
+  padding: 20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  z-index: 40;
+  overflow-y: auto;          /* allow sidebar to scroll if content gets tall */
+}
+
+/* logo */
+.logo { display:flex; 
+  align-items:center; 
+  gap:10px;
+  margin-bottom: 20px
+ }
+  
+/* the size logo icon img by miede tech  */
+.logo-icon img  { width:34px; height:34px; color: #3b82f6; }
+.logo h1 { font-size: 1.05rem; margin:0; font-weight:700; color:#fff; }
+
+/* menu */
+.menu, .menu-bottom { 
+  display:flex; 
+  flex-direction:column; 
+  gap:8px; }
+
+.menu-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:8px;
+  color:#94a3b8; 
+  text-decoration:none; 
+  cursor:pointer;
+}
+.menu-item .material-symbols-outlined { font-size:20px; }
+.menu-item:hover { background:#334155; color:#fff; }
+.menu-item.active { background:#2563eb; color:#fff; }
+
+/* topbar (fixed) */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 250px;               /* push right of sidebar width */
+  right: 0;
+  height: 72px;              /* <-- header height */
+  background: #0f172a;       /* match overall bg */
+  border-bottom: 1px solid #334155;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 0 28px;
+  z-index: 30;
+}
+
+/* topbar content */
+.topbar h1 { margin:0; font-size:1.35rem; font-weight:700; color:#fff; }
+.user-info { display:flex; align-items:center; gap:12px; }
+.avatar { width:44px; height:44px; border-radius:50%; background-size:cover; background-position:center; }
+
+/* main content (scrollable only) */
+.main {
+  margin-left: 250px;                         /* same as sidebar width */
+  margin-top: 72px;                          /* same as header height */
+  padding: 28px;
+  height: calc(100vh - 72px);                /* fill remaining height */
+  overflow-y: auto;                          /* THIS scrolls */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* section spacing */
+.section { margin-bottom: 60px; }
+
+/* cards */
+.card {
+  background:#1e293b;
+  border: 1px solid #334155;
+  border-radius:12px;
+  padding:32px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.card h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #fff;
+  text-align: center;
+}
+.card p {
+  color: #94a3b8;
+  margin: 0 0 32px 0;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.form-section {
+  border-bottom: 1px solid #334155;
+  padding-bottom: 24px;
+}
+.form-section:last-of-type {
+  border-bottom: none;
+}
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #fff;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+label {
+  display: block;
+  font-size: 14px;
+  color: #d1d5db;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #38e07b;
+  box-shadow: 0 0 0 2px rgba(56, 224, 123, 0.2);
+}
+select.form-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem 1rem;
+}
+
+/* buttons */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  font-family: inherit;
+  width: 100%;
+}
+.btn-primary {
+  background: #38e07b;
+  color: #111827;
+}
+.btn-primary:hover {
+  background: #2bc96a;
+}
+
+/* messages */
+.messages {
+  margin-bottom: 24px;
+}
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid;
+}
+.alert-success {
+  background: rgba(56, 224, 123, 0.1);
+  border-color: #38e07b;
+  color: #38e07b;
+}
+.alert-error {
+  background: rgba(220, 38, 38, 0.1);
+  border-color: #dc2626;
+  color: #f87171;
+}
+
+.staff-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 15px 10px;
+  color: #f0f0f0;
+}
+
+.staff-avatar {
+  font-size: 48px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.staff-details h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.staff-details .dept {
+  margin: 2px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #a0c4ff; /* bluish highlight */
+}
+
+.staff-details .email {
+  margin: 0;
+  font-size: 12px;
+  color: #ccc;
+  word-break: break-all;
+}
+
+
+/* small screens adjustments */
+@media (max-width: 900px){
+  .sidebar { width:220px; }
+  .topbar { left:220px; }
+  .main { margin-left:220px; }
+  .card {
+    padding: 24px 20px;
+    margin: 0 16px;
+  }
+}
+</style>
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div>
+      <div class="logo">
+        <img src="{% static 'images/sakaslist_logo-removebg-preview.png' %}" 
+            alt="Logo" 
+            style="width: 50px; height: auto;">
+        <h1>SakasTrack</h1>
+      </div>
+
+      <!-- Staff Info Card -->
+      <div class="staff-info">
+        <div class="staff-avatar">
+          <!-- fallback avatar (use profile picture if you later add image field) -->
+          <span class="material-symbols-outlined">account_circle</span>
+        </div>
+        <div class="staff-details">
+          <h3>{{ request.user.get_full_name|default:request.user.username }}</h3>
+          <p class="dept">
+            {% if request.user.profile.department %}
+              {{ request.user.profile.department.name }}
+            {% else %}
+              No Department
+            {% endif %}
+          </p>
+          <p class="email">{{ request.user.email }}</p>
+        </div>
+      </div>
+
+      <nav class="menu" aria-label="Main menu">
+        <a href="{% url 'staff_dashboard' %}" 
+          class="menu-item {% if request.resolver_match.url_name == 'staff_dashboard' %}active{% endif %}">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="{% url 'staff_profile' %}" 
+          class="menu-item {% if request.resolver_match.url_name == 'staff_profile' %}active{% endif %}">
+          <span class="material-symbols-outlined">settings</span>
+          <span>Profile/Settings</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="menu-bottom">
+      <a href="{% url 'staff_logout' %}" class="menu-item">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- header -->
+  <header class="topbar" id="topbar">
+    <h1 id="page-title">Staff Profile</h1>
+    <div class="user-info">
+      <p class="user-name">{{ request.user.username }}</p>
+      <div class="avatar" style="background-image:url('/images/Ayo.jpg');"></div>
+    </div>
+  </header>
+
+  <!-- main scrollable content area -->
+  <main class="main" id="mainContent" role="main">
+    <section class="section">
+      <div class="card">
+        <h2>Staff Profile</h2>
+        <p>Update your personal information and password</p>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+          {% csrf_token %}
+          
+          <!-- Basic Information Section -->
+          <div class="form-section">
+            <h3 class="section-title">Basic Information</h3>
+            
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                class="form-input" 
+                placeholder="Enter your full name"
+                value="{% if request.user.first_name or request.user.last_name %}{{ request.user.first_name }} {{ request.user.last_name }}{% endif %}"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                class="form-input" 
+                placeholder="Enter your email address"
+                value="{{ request.user.email }}"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="department">Department</label>
+              <select id="department" name="department" class="form-input">
+                <option value="">Select Department</option>
+                {% for department in departments %}
+                <option value="{{ department.id }}" 
+                  {% if staff_profile.department.id == department.id %}selected{% endif %}>
+                  {{ department.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <!-- Password Change Section -->
+          <div class="form-section">
+            <h3 class="section-title">Change Password</h3>
+            
+            <div class="form-group">
+              <label for="current_password">Current Password</label>
+              <input 
+                type="password" 
+                id="current_password" 
+                name="current_password" 
+                class="form-input" 
+                placeholder="Enter your current password"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="new_password">New Password</label>
+              <input 
+                type="password" 
+                id="new_password" 
+                name="new_password" 
+                class="form-input" 
+                placeholder="Enter your new password"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="confirm_password">Confirm New Password</label>
+              <input 
+                type="password" 
+                id="confirm_password" 
+                name="confirm_password" 
+                class="form-input" 
+                placeholder="Confirm your new password"
+              >
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <span class="material-symbols-outlined" style="font-size:18px;">save</span>
+            Update Profile
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

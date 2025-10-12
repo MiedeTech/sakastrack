@@ -1,0 +1,267 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track My Query</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #38e07b;
+      --primary-dark: #2bc96a;
+      --bg-dark: #0f172a;
+      --bg-darker: #0a0f1c;
+      --text-light: #f8fafc;
+      --text-gray: #94a3b8;
+    }
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg-darker), var(--bg-dark));
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-color);
+        z-index: 100;
+        padding: 1rem 0;
+    }
+
+    .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+    }
+
+    .logo img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .logo h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: var(--bg-dark);
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 650px;
+      width: 100%;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      margin: 2rem 0;
+    }
+
+    h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: .5rem;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: .8rem;
+      margin-bottom: 1.2rem;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: .9rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      background: var(--primary-color);
+      color: var(--bg-dark);
+      border: none;
+      width: 100%;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-3px);
+    }
+
+    .back-link {
+      color: var(--text-gray);
+      font-size: .95rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: 1rem;
+      transition: color .3s;
+    }
+
+    .back-link:hover {
+      color: var(--primary-color);
+    }
+
+    .status-pill {
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-open { background: #e74c3c; color: white; }
+    .status-in_progress { background: #f39c12; color: white; }
+    .status-resolved { background: #2ecc71; color: white; }
+
+    .alert {
+      padding: .8rem 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .alert-danger { background: #e74c3c; color: #fff; }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      color: var(--primary-color);
+      text-align: left;
+    }
+    
+    .query-details {
+      background: var(--bg-darker);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 1.5rem;
+      text-align: left;
+    }
+    
+    .details-grid .full-width {
+      grid-column: span 2;
+    }
+    
+    .label {
+      font-weight: 600;
+      color: var(--text-gray);
+      display: inline-block;
+      min-width: 110px;
+    }
+    
+    .value {
+      font-weight: 500;
+      color: var(--text-light);
+    }
+    
+    .status-pill {
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-container">
+    <a href="{% url 'landing' %}" class="logo d-flex align-items-center">
+      <img src="{% static 'images/sakaslist_logo-removebg-preview.png' %}" alt="Logo">
+      <h1>SAKASTRACK</h1>
+    </a>
+  </div>
+</header>
+
+<div class="main-container">
+  <a href="{% url 'landing' %}" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back
+  </a>
+
+  <div class="card">
+    <h3><i class="fas fa-search"></i> Track Your Query</h3>
+    <form method="post" class="mb-3">
+      {% csrf_token %}
+      <label>Enter Query Number</label>
+      <input type="text" name="query_number" placeholder="QRY-00001">
+
+      <div class="text-center mb-2">OR</div>
+
+      <label>Enter Your Email</label>
+      <input type="email" name="email" placeholder="you@example.com">
+
+      <button type="submit" class="btn">Check Status</button>
+    </form>
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if query_result %}
+      <div class="query-details mt-4">
+        <h5 class="section-title"><i class="fas fa-thumbtack"></i> Query Details</h5>
+        <div class="details-grid">
+          <div><span class="label">Number:</span> <span class="value">{{ query_result.query_number }}</span></div>
+          <div><span class="label">Title:</span> <span class="value">{{ query_result.title }}</span></div>
+          <div><span class="label">Department:</span> <span class="value">{{ query_result.department.name }}</span></div>
+          <div>
+            <span class="label">Status:</span>
+            <span class="status-pill status-{{ query_result.status }}">
+              {{ query_result.get_status_display }}
+            </span>
+          </div>
+          <div class="full-width"><span class="label">Description:</span> <span class="value">{{ query_result.description }}</span></div>
+          <div><span class="label">Last Updated:</span> <span class="value">{{ query_result.updated_at|date:"M d, Y H:i" }}</span></div>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+</body>
+</html>

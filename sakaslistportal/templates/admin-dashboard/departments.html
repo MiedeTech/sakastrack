@@ -1,0 +1,591 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Department Management - SakasTrack Admin</title>
+
+  <!-- fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+<style>
+/* box-sizing + reset */
+* { box-sizing: border-box; }
+html,body { height:100%; }
+body {
+  margin: 0;
+  font-family: "Spline Sans", "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: #0f172a;
+  color: #fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Sidebar (fixed) */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 250px;               /* <-- sidebar width */
+  background: #1e293b;
+  border-right: 1px solid #334155;
+  padding: 20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  z-index: 40;
+  overflow-y: auto;          /* allow sidebar to scroll if content gets tall */
+}
+
+/* logo */
+.logo { display:flex; 
+  align-items:center; 
+  gap:10px;
+  margin-bottom: 20px
+ }
+  
+/* the size logo icon img by miede tech  */
+.logo-icon img  { width:34px; height:34px; color: #3b82f6; }
+.logo h1 { font-size: 1.05rem; margin:0; font-weight:700; color:#fff; }
+
+/* menu */
+.menu, .menu-bottom { 
+  display:flex; 
+  flex-direction:column; 
+  gap:8px; }
+
+.menu-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-radius:8px;
+  color:#94a3b8; 
+  text-decoration:none; 
+  cursor:pointer;
+}
+.menu-item .material-symbols-outlined { font-size:20px; }
+.menu-item:hover { background:#334155; color:#fff; }
+.menu-item.active { background:#2563eb; color:#fff; }
+
+/* topbar (fixed) */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 250px;               /* push right of sidebar width */
+  right: 0;
+  height: 72px;              /* <-- header height */
+  background: #0f172a;       /* match overall bg */
+  border-bottom: 1px solid #334155;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 0 28px;
+  z-index: 30;
+}
+
+/* topbar content */
+.topbar h1 { margin:0; font-size:1.35rem; font-weight:700; color:#fff; }
+.user-info { display:flex; align-items:center; gap:12px; }
+.avatar { width:44px; height:44px; border-radius:50%; background-size:cover; background-position:center; }
+
+/* main content (scrollable only) */
+.main {
+  margin-left: 250px;                         /* same as sidebar width */
+  margin-top: 72px;                          /* same as header height */
+  padding: 28px;
+  height: calc(100vh - 72px);                /* fill remaining height */
+  overflow-y: auto;                          /* THIS scrolls */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* section spacing */
+.section { margin-bottom: 60px; }
+
+/* grid layout */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+/* cards */
+.card {
+  background:#1e293b;
+  border: 1px solid #334155;
+  border-radius:12px;
+  padding:24px;
+}
+.card h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #fff;
+}
+.card p {
+  color: #94a3b8;
+  margin: 0 0 20px 0;
+  font-size: 0.9rem;
+}
+
+/* form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+label {
+  display: block;
+  font-size: 14px;
+  color: #d1d5db;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #38e07b;
+  box-shadow: 0 0 0 2px rgba(56, 224, 123, 0.2);
+}
+textarea.form-input {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* buttons */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  font-family: inherit;
+}
+.btn-primary {
+  background: #38e07b;
+  color: #111827;
+}
+.btn-primary:hover {
+  background: #2bc96a;
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #94a3b8;
+}
+.btn-outline:hover {
+  background: #334155;
+  color: #fff;
+}
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+.btn-danger:hover {
+  background: #b91c1c;
+}
+.action-btn {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+/* departments grid */
+.departments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.department-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  border-left: 4px solid #38e07b;
+}
+.department-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 8px 0;
+}
+.department-description {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+.department-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* messages */
+.messages {
+  margin-bottom: 20px;
+}
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid;
+}
+.alert-success {
+  background: rgba(56, 224, 123, 0.1);
+  border-color: #38e07b;
+  color: #38e07b;
+}
+
+/* modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #1e293b;
+  padding: 24px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid #334155;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+}
+.close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+.modal-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.modal-btn-primary {
+  background: #38e07b;
+  color: #111827;
+}
+.modal-btn-outline {
+  background: transparent;
+  border: 1px solid #334155;
+  color: #fff;
+}
+
+/* empty state */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #94a3b8;
+  grid-column: 1 / -1;
+}
+.empty-state svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+/* small screens adjustments */
+@media (max-width: 900px){
+  .sidebar { width:220px; }
+  .topbar { left:220px; }
+  .main { margin-left:220px; }
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .departments-grid {
+    grid-template-columns: 1fr;
+  }
+  .department-actions {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div>
+      <div class="logo">
+        <img src="{% static 'images/sakaslist_logo-removebg-preview.png' %}" 
+            alt="Logo" 
+            style="width: 50px; height: auto;">
+        <h1>SakasTrack Admin</h1>
+      </div>
+
+      <nav class="menu" aria-label="Main menu">
+        <!-- Dashboard -->
+        <a href="{% url 'admin_dashboard' %}" data-title="Admin Dashboard" 
+          class="menu-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+
+        <!-- Staff Management -->
+        <a href="{% url 'staff_management' %}" data-title="Staff Management" 
+          class="menu-item {% if request.resolver_match.url_name == 'staff_management' %}active{% endif %}">
+          <span class="material-symbols-outlined">groups</span>
+          <span>Staff Management</span>
+        </a>
+
+        <!-- Department Management -->
+        <a href="{% url 'department_management' %}" data-title="Department Management" 
+          class="menu-item active">
+          <span class="material-symbols-outlined">apartment</span>
+          <span>Departments</span>
+        </a>
+
+        <!-- Query Management -->
+        <a href="{% url 'query_management' %}" data-title="Query Management" 
+          class="menu-item {% if request.resolver_match.url_name == 'query_management' %}active{% endif %}">
+          <span class="material-symbols-outlined">support_agent</span>
+          <span>Queries</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="menu-bottom">
+      <!-- Logout -->
+      <a href="{% url 'staff_logout' %}" class="menu-item">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- header -->
+  <header class="topbar" id="topbar">
+    <h1 id="page-title">Department Management</h1>
+    <div class="user-info">
+      <p class="user-name">{{ request.user.username }}</p>
+      <div class="avatar" style="background-image:url('/images/Ayo.jpg');"></div>
+    </div>
+  </header>
+
+  <!-- main scrollable content area -->
+  <main class="main" id="mainContent" role="main">
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Page Header -->
+    <section class="section">
+      <div class="card">
+        <h2>Department Management</h2>
+        <p>Create, update, and manage departments for staff organization</p>
+      </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <section class="section">
+      <div class="grid-2">
+        <!-- Create Department Form -->
+        <div class="card">
+          <h3>Create New Department</h3>
+          <p>Add a new department to organize your staff</p>
+          
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+            
+            <div class="form-group">
+              <label for="name">Department Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                class="form-input" 
+                placeholder="Enter department name"
+                required
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea 
+                id="description" 
+                name="description" 
+                class="form-input" 
+                placeholder="Enter department description"
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <span class="material-symbols-outlined" style="font-size:18px;">add</span>
+              Create Department
+            </button>
+          </form>
+        </div>
+
+        <!-- Departments List -->
+        <div class="card">
+          <h3>All Departments</h3>
+          <p>Manage existing departments</p>
+          
+          {% if departments %}
+          <div class="departments-grid">
+            {% for department in departments %}
+            <div class="department-card">
+              <h4 class="department-name">{{ department.name }}</h4>
+              <p class="department-description">{{ department.description }}</p>
+              <div class="department-actions">
+                <button type="button" class="btn btn-outline action-btn" onclick="openEditModal('{{ department.id }}', '{{ department.name }}', `{{ department.description }}`)">
+                  <span class="material-symbols-outlined" style="font-size:16px;">edit</span>
+                  Edit
+                </button>
+                <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete {{ department.name }} department?')">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="delete">
+                  <input type="hidden" name="dept_id" value="{{ department.id }}">
+                  <button type="submit" class="btn btn-danger action-btn">
+                    <span class="material-symbols-outlined" style="font-size:16px;">delete</span>
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+            </svg>
+            <p>No departments found. Create your first department to get started.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Department</h3>
+        <button class="close" onclick="closeEditModal()">×</button>
+      </div>
+      <form method="POST" id="editForm">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update">
+        <input type="hidden" name="dept_id" id="editDeptId">
+        
+        <div class="form-group">
+          <label for="editName">Department Name</label>
+          <input 
+            type="text" 
+            id="editName" 
+            name="name" 
+            class="form-input" 
+            placeholder="Enter department name"
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="editDescription">Description</label>
+          <textarea 
+            id="editDescription" 
+            name="description" 
+            class="form-input" 
+            placeholder="Enter department description"
+            required
+          ></textarea>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="modal-btn modal-btn-outline" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="modal-btn modal-btn-primary">Update Department</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function openEditModal(deptId, name, description) {
+      document.getElementById('editDeptId').value = deptId;
+      document.getElementById('editName').value = name;
+      document.getElementById('editDescription').value = description;
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('editModal');
+      if (event.target === modal) {
+        closeEditModal();
+      }
+    }
+
+    // Escape key to close modal
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeEditModal();
+      }
+    });
+  </script>
+</body>
+</html>

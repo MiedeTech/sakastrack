@@ -1,0 +1,257 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+  <link as="style" href="https://fonts.googleapis.com/css2?display=swap&family=Manrope:wght@400;500;700;800&family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <title>SakasTrack - Staff Sign Up</title>
+  <link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+  <!-- <link rel="stylesheet" href="staff-signup.css"> -->
+
+<style>
+  :root {
+      --primary-color: #5078ee;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Manrope', sans-serif;
+      background-color: #111714;
+      color: white;
+    }
+
+    /* Container */
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      width: 100%;
+      border-bottom: 1px solid #29382f;
+      background-color: rgba(17, 23, 20, 0.8);
+      backdrop-filter: blur(6px);
+    }
+
+    .header-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-left h1 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .header-left svg {
+      height: 32px;
+      width: 32px;
+      color: var(--primary-color);
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 28rem;
+      background-color: #181f1b;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .card h2 {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: rgb(255, 255, 255);
+    }
+
+    .card p {
+      text-align: center;
+      font-size: 14px;
+      color: #9eb7a8;
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+
+    /* Form */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #d1d5db;
+      margin-bottom: 4px;
+    }
+
+    img {
+      width: 35px;
+    }
+
+    .form-input {
+      width: 100%;
+      border: none;
+      border-radius: 8px;
+      background-color: #29382f;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 400;
+      line-height: normal;
+      color: white;
+      outline: none;
+    }
+
+    .form-input::placeholder {
+      color: #9eb7a8;
+    }
+
+    .form-input:focus {
+      border: 1px solid var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(26, 2, 107, 0.5);
+    }
+
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239eb7a8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1rem 1rem;
+    }
+
+    /* Button */
+    button {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--primary-color);
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      cursor: pointer;
+      transition: background-color 0.2s ease, opacity 0.2s ease;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-color), 0 0 0 4px #181f1b;
+    }
+</style>
+</head>
+
+<body>
+  <div class="page-container">
+    <header>
+      <div class="header-content">
+        <div class="header-left">
+            <img src="{% static 'images/sakaslist_logo-removebg-preview.png' %}" 
+                alt="Logo" 
+                style="width: 50px; height: auto;">
+          <h1>SakasTrack</h1>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="card">
+        {% if messages %}
+        <div style="max-width:28rem; margin: 0 auto 20px auto;">
+            {% for message in messages %}
+            <div 
+                {% if message.tags == 'success' %}
+                    style="padding: 12px; border-radius: 8px; margin-bottom: 10px; background-color: #1f5132; color: #d1fae5;"
+                {% elif message.tags == 'error' %}
+                    style="padding: 12px; border-radius: 8px; margin-bottom: 10px; background-color: #7f1d1d; color: #fee2e2;"
+                {% else %}
+                    style="padding: 12px; border-radius: 8px; margin-bottom: 10px; background-color: #374151; color: #f3f4f6;"
+                {% endif %}
+            >
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <h2>Create your staff account</h2>
+        <p>Join the team and start managing queries.</p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                <label for="full-name">Full Name</label>
+                <input id="full-name" type="text" name="full_name" placeholder="Enter your full name" required class="form-input" autocomplete="name"/>
+            </div>
+
+            <div>
+                <label for="email">Email Address</label>
+                <input id="email" type="email" name="email" placeholder="Enter your email address" required class="form-input" autocomplete="email"/>
+            </div>
+
+            <div>
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" placeholder="Create a password" required class="form-input" autocomplete="new-password"/>
+            </div>
+
+            <div>
+            <label for="department">Department</label>
+            <select id="department" name="department" required class="form-input">
+                <option disabled selected value="">Select your department</option>
+                {% for dept in departments %}
+                <option value="{{ dept.name }}">{{ dept.name }}</option>
+                {% endfor %}
+            </select>
+            </div>
+
+            <div>
+                <button type="submit">Create Account</button>
+            </div>
+        </form>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>
